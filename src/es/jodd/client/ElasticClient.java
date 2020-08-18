@@ -204,7 +204,7 @@ public class ElasticClient
 
 		JsonParser jp = new JsonParser();
 
-		JsonArray arr = jp.parseAsJsonArray(resp.body());
+		JsonArray arr = jp.parseAsJsonArray(resp.bodyText());
 
 		List<String> names = null;
 
@@ -235,7 +235,7 @@ public class ElasticClient
 		logResponse("mappings",resp);
 		JsonParser jp = new JsonParser();
 
-		JsonObject obj = jp.parseAsJsonObject(resp.body());
+		JsonObject obj = jp.parseAsJsonObject(resp.bodyText());
 		obj = obj.getJsonObject(index);
 		obj = obj.getJsonObject("mappings");
 
@@ -352,7 +352,7 @@ public class ElasticClient
 
 		logResponse("Query response",resp);
 
-		String body = resp.body();
+		String body = resp.bodyText();
 
 		return body;
 	}
@@ -404,7 +404,7 @@ public class ElasticClient
 
 		logResponse("Query response",resp);
 
-		String body = resp.body();
+		String body = resp.bodyText();
 
 		return body;
 	}
@@ -426,7 +426,7 @@ public class ElasticClient
 			{
 				ECException ec = new ECException(resp.statusPhrase());
 				ec.setHttpStatus(resp.statusCode());
-				ec.setResponseBody(resp.body());
+				ec.setResponseBody(resp.bodyText());
 				throw ec;
 			}
 		}
@@ -575,7 +575,7 @@ public class ElasticClient
 
 			logResponse("get response",resp);
 
-			json = resp.body();
+			json = resp.bodyText();
 		}
 		catch(Exception ex)
 		{
@@ -642,7 +642,7 @@ public class ElasticClient
 
 			logResponse("save response",resp);
 
-			String body = resp.body();
+			String body = resp.bodyText();
 			JsonParser jp = new JsonParser();
 			JsonObject obj = jp.parseAsJsonObject(body);
 			outID = obj.getString("_id");
@@ -714,7 +714,7 @@ public class ElasticClient
 
 				logResponse("bulk response",resp);
 
-				jsonRet = resp.body();
+				jsonRet = resp.bodyText();
 
 				obj = parser.parseAsJsonObject(jsonRet);
 
@@ -875,7 +875,7 @@ public class ElasticClient
 
 			logResponse("Query response",resp);
 
-			String body = resp.body();
+			String body = resp.bodyText();
 			JsonObject obj = JsonParser.create().parseAsJsonObject(body);
 
 			obj = obj.getJsonObject("aggregations");
