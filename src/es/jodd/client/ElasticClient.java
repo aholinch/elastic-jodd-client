@@ -564,18 +564,46 @@ public class ElasticClient
 		try
 		{
 			String url = baseURL + index+"/_doc/"+id;
-
-			logger.info(url);
-
 			HttpRequest req = null;
+			HttpResponse resp = null;
+			if(!index.contains("*"))
+			{
+				logger.info(url);
 
-			req = HttpRequest.get(url);
+				req = HttpRequest.get(url);
 
-			HttpResponse resp = sendRequest(req);
+				resp = sendRequest(req);
 
-			logResponse("get response",resp);
+				logResponse("get response",resp);
 
-			json = resp.bodyText();
+				json = resp.bodyText();
+			}
+			else
+			{
+				// we have to query for the doc by id
+				String body = "{\"query\":{\"ids\":{\"values\": [\""+id+"\"]}}}";
+				
+				logger.info(body);
+				url = baseURL + index+"/_search";
+				logger.info(url);
+
+				req = HttpRequest.get(url);
+
+				req.bodyText(body, "application/json");
+				
+				resp = sendRequest(req);
+
+				logResponse("get response",resp);
+
+				json = resp.bodyText();
+				
+				JsonParser jp = new JsonParser();
+				JsonObject obj = jp.parseAsJsonObject(json);
+				obj = obj.getJsonObject("hits");
+				obj = obj.getJsonArray("hits").getJsonObject(0);
+				json = obj.toString();
+			}
+			
 		}
 		catch(Exception ex)
 		{
@@ -800,16 +828,24 @@ public class ElasticClient
 		try
 		{
 			String url = baseURL + index+"/_doc/"+id;
-
-			logger.info(url);
-
 			HttpRequest req = null;
-
-			req = HttpRequest.delete(url);
-
-			HttpResponse resp = sendRequest(req);
-
-			logResponse("get response",resp);
+			HttpResponse resp = null;
+			
+			if(!index.contains("*"))
+			{
+				logger.info(url);
+	
+	
+				req = HttpRequest.delete(url);
+	
+				resp = sendRequest(req);
+	
+				logResponse("get response",resp);
+			}
+			else
+			{
+				
+			}
 
 		}
 		catch(Exception ex)
